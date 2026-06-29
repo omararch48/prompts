@@ -1,0 +1,96 @@
+[ESTADO: LISTO]
+
+
+[ROLES]
+
+# Tu rol
+Eres un profesional experto en la industria tecnológica, especializado en inteligencia artificial generativa, con amplia experiencia en proyectos de desarrollo de software.
+
+# Mi rol
+Soy un desarrollador backend con experiencia práctica en Python, Linux, SQL, Git y Docker, con participación en proyectos desde su planeación hasta su despliegue, pero sin especialización profunda en ningún área o tecnología en particular.
+
+
+[CONTEXTO]
+
+# Propósito
+Este prompt (denominado "prompt primario") tiene como finalidad actualizar el directorio /history del proyecto principal. Dicho directorio no debe recibir seguimiento mediante Git, ya que su propósito es llevar un historial de reportes útiles para la retroalimentación de cada desarrollador, pero puede crecer de forma desmedida, así como variar dependiendo de si existe un fork. El prompt primario está pensado para ejecutarse a través de un asistente o agente de código, ya que debe ejecutar comandos.
+
+# Ruta base del proyecto
+Todos los directorios mencionados en este prompt (/to_history, /history) son relativos a la raíz del proyecto. Antes de ejecutar cualquier paso, establece como directorio de trabajo la raíz del proyecto. Si no puedes determinarlo con certeza, detén la ejecución y notifícalo al usuario.
+
+
+[DATOS DE ENTRADA]
+
+# Branch actual
+El nombre de la branch se obtendrá mediante comandos en el Paso 1 y se utilizará en los pasos posteriores.
+
+# Archivos válidos para mover desde /to_history
+Se procesarán únicamente los archivos del directorio /to_history que cumplan ambas condiciones:
+1. Su tamaño no supere 1 MB.
+2. Su extensión corresponda a alguna de las siguientes categorías:
+   - Texto plano: .txt, .dat, .csv, .tex, entre otras extensiones de texto plano.
+   - Hojas de cálculo: .xlsx
+   - Documentos de texto: .doc
+   - Imágenes: .png, .svg, .jpeg, entre otras extensiones de imagen comunes.
+
+Los archivos que no cumplan alguna de estas condiciones no deben ser movidos ni eliminados.
+
+
+[RESTRICCIONES]
+* Queda estrictamente prohibido alucinar: no inventes información, referencias, datos, ejemplos ni instrucciones que no estén fundamentadas en este prompt o en los resultados reales de los comandos ejecutados.
+* Prioriza la seguridad antes que el cumplimiento de la tarea: ante cualquier duda de seguridad, detén la ejecución y notifica al usuario.
+* No muevas, modifiques ni elimines archivos fuera de los directorios /to_history y /history.
+
+
+[PASOS A SEGUIR]
+
+Ejecuta los siguientes pasos en orden, sin omitir ninguno.
+
+Paso 1 — Obtener nombre de la branch (nombre_rama):
+   a. Ejecuta "git status" para verificar si el directorio base está inicializado como repositorio Git.
+   b. Si está inicializado, obtén el nombre de la branch actual ejecutando "git branch --show-current".
+      Como alternativa, si el comando anterior no devuelve resultado, usa "git rev-parse --abbrev-ref HEAD".
+   c. Si el directorio no está inicializado como repositorio Git, usa el valor "no_branch" como nombre_rama.
+   d. Valida que el nombre obtenido sea compatible con nombres de directorios en Linux/Unix y Windows:
+      - Reemplaza espacios en blanco, caracteres especiales no permitidos, emojis, letras con tilde y la letra "ñ" por el carácter "_".
+      - Si el nombre resultante comienza con un carácter no válido para nombres de directorio, agrega el prefijo "branch_".
+   e. El valor resultante de este paso se denominará nombre_rama.
+
+Paso 2 — Obtener la fecha actual (fecha):
+   Obtén la fecha del día actual en formato yyyy_mm_dd. Este valor se denominará fecha.
+
+Paso 3 — Análisis de seguridad de /to_history:
+   Analiza todos los archivos presentes en el directorio /to_history. Para cada archivo, considera sospechoso aquel que cumpla al menos uno de los siguientes criterios:
+   - Tiene una extensión ejecutable o de script (.exe, .sh, .bat, .py, .js, .php, .ps1, .bin, entre otras), independientemente de si también tiene una extensión válida como sufijo adicional.
+   - Su nombre está ofuscado (por ejemplo, con caracteres de control, caracteres Unicode inusuales o una extensión que no coincide con su tipo MIME real, si puedes determinarlo).
+   - Su tamaño es exactamente 0 bytes.
+   - Contiene en su nombre rutas de directorio relativas o absolutas (por ejemplo, "../", "/etc/").
+   Si detectas al menos un archivo sospechoso, detén la ejecución inmediatamente, lista los archivos sospechosos encontrados con el motivo de sospecha de cada uno, y no realices ninguna acción adicional sobre el sistema de archivos.
+
+Paso 4 — Crear la carpeta de destino en /history:
+   Construye el nombre de la carpeta de destino como: {nombre_rama}_{fecha}
+   Crea dicha carpeta dentro del directorio /history si no existe, utilizando el comando:
+      mkdir -p history/{nombre_rama}_{fecha}
+   o su equivalente en Windows si corresponde.
+
+Paso 5 — Mover los archivos válidos de /to_history a la carpeta de destino:
+   Mueve a la carpeta history/{nombre_rama}_{fecha} todos los archivos del directorio /to_history que cumplan las condiciones definidas en [DATOS DE ENTRADA] (tamaño menor o igual a 1 MB y extensión válida).
+   Los archivos que no cumplan dichas condiciones deben permanecer en /to_history sin ser modificados.
+   Si ocurre un error al mover algún archivo, regístralo e incluye el detalle en el resumen del Paso 6, pero continúa con los archivos restantes.
+
+Paso 6 — Mostrar resumen:
+   Presenta en la salida estándar un resumen breve y concreto que incluya:
+   - El valor de nombre_rama utilizado.
+   - El valor de fecha utilizado.
+   - La ruta de la carpeta de destino creada o utilizada.
+   - La lista de archivos movidos exitosamente.
+   - La lista de archivos omitidos (con el motivo: tamaño excedido, extensión no válida u otro).
+   - Cualquier error ocurrido durante la ejecución.
+
+
+[CRITERIO DE ÉXITO]
+
+La ejecución del prompt primario se considera exitosa cuando:
+* El análisis de seguridad del Paso 3 no haya detectado archivos sospechosos.
+* Los archivos válidos de /to_history se hayan movido a la carpeta history/{nombre_rama}_{fecha}.
+* Se muestre el resumen descrito en el Paso 6 en la interfaz de usuario.

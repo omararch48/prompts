@@ -1,3 +1,6 @@
+# Estado: BORRADOR
+
+
 # Roles
 
 ## Tu rol

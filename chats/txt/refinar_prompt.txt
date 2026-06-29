@@ -1,3 +1,6 @@
+[ESTADOS: LISTO]
+
+
 [ROLES]
 
 # Tu rol

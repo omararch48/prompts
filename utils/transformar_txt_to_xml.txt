@@ -1,3 +1,6 @@
+[ESTADO: LISTO]
+
+
 [ROLES]
 
 # Tu rol
@@ -62,7 +65,26 @@ Ejecuta los siguientes pasos en orden y sin omitir ninguno:
 
    4.5. Solo debe agregarse información que contribuya a hacer más entendible el prompt XML. Por ejemplo: una lista de tres elementos con numeración simple (1.1, 1.1.1, 1.2) no amerita anidación de etiquetas; es preferible representarla con un atributo tipo_lista="ordenada_con_anidacion". Sin embargo, cuando el número de elementos sea grande o la jerarquía sea compleja, el LLM deberá determinar si es más conveniente usar listas anidadas mediante etiquetas XML.
 
-   Si el valor de "tipo transformacion" es distinto de "txt_to_xml", omite los subpasos 4.1 al 4.5 y continúa con el paso 5.
+   4.6. Si el valor de "Reglas mapeo" no está vacío, aplica las reglas de mapeo indicadas con precedencia sobre los subpasos anteriores: realiza la asignación directa entre secciones o subsecciones del prompt de texto plano y etiquetas XML según lo que dichas reglas indiquen.
+
+   Por ejemplo, si las reglas de mapeo son:
+   "Mapea al mismo nivel de [ROLES] la información de # Mi rol con la etiqueta rol_para_subagente y agrega el atributo skills con los valores student y developer"
+
+   y el prompt de texto plano contiene:
+
+   [ROLES]
+
+   Aquí se especifican los roles
+
+   # Mi rol
+   Soy un estudiante
+
+   el resultado esperado es:
+
+   <roles section="ROLES">Aquí se especifican los roles</roles>
+   <rol_para_subagente skills="student developer">Soy un estudiante</rol_para_subagente>
+
+   Si el valor de "tipo transformacion" es distinto de "txt_to_xml", omite los subpasos 4.1 al 4.6 y continúa con el paso 5.
 
 5. Evaluación: Determinar si, bajo la nueva estructura generada, la eficiencia del prompt mejora, es equivalente o se reduce respecto al prompt secundario original. Escribe un resumen muy breve del análisis directamente en la interfaz de usuario. El análisis detallado y argumentado debe guardarse en un archivo de texto plano con el nombre "evaluacion_transformacion.txt".
 
