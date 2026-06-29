@@ -11,4 +11,4 @@ Prompts de utilidad para operaciones internas del proyecto. Generan salidas rele
 
 ## Notas de uso
 - Proporcionar en los datos de entrada: el prompt secundario, el tipo de transformación (`txt_to_xml`) y las reglas de mapeo opcionales.
-- La salida de evaluación se guarda en `to_history/` para ser procesada con `project__manage_prompts/txt/update_history.txt`.
+- La salida de evaluación se guarda en `to_history/` para ser procesada con `project_manage_prompts/txt/update_history.txt`.

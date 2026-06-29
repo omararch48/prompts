@@ -1,4 +1,4 @@
-# Catálogo: project__manage_prompts/
+# Catálogo: project_manage_prompts/
 
 ## Propósito
 Prompts para la gestión interna del proyecto. Sus ejecuciones producen cambios locales no rastreados por Git, como mover archivos al historial.
