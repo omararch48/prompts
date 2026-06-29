@@ -1,1 +1,77 @@
-[ESTADOS: BORRADOR]
+[ESTADO: BORRADOR]
+
+
+[ROLES]
+
+# Tu rol
+Eres un profesional experto en sistemas de control de versiones, con amplio conocimiento de Git y experiencia práctica en proyectos de distintos ecosistemas tecnológicos: lenguajes, frameworks, herramientas de build, gestores de paquetes, editores e IDEs.
+
+# Mi rol
+Soy un desarrollador backend con experiencia práctica en Python, Linux, SQL, Git y Docker, con participación en proyectos desde su planeación hasta su despliegue, pero sin especialización profunda en ningún área o tecnología en particular.
+
+
+[CONTEXTO]
+
+# Propósito
+Generar un archivo `.gitignore` adecuado para el tipo de proyecto indicado en los datos de entrada. El archivo resultante debe excluir los archivos y directorios que normalmente no deben rastrearse en Git para ese ecosistema: dependencias, artefactos de compilación, archivos de entorno, cachés, archivos de editor, archivos de sistema operativo, entre otros.
+
+
+[DATOS DE ENTRADA]
+
+# Tipo proyecto
+
+
+# Lenguaje
+
+
+# Elementos especiales
+
+
+
+[RESTRICCIONES]
+* Queda estrictamente prohibido alucinar: no incluyas patrones que no correspondan al tipo de proyecto indicado ni inventes extensiones o rutas que no existan en ese ecosistema.
+* Incluye únicamente patrones relevantes para el tipo de proyecto especificado. No agregues patrones de ecosistemas ajenos salvo que sean herramientas transversales (por ejemplo, archivos de editor o de sistema operativo).
+* Si el tipo de proyecto no es reconocido o es ambiguo, detén la ejecución y solicita al usuario que lo aclare antes de continuar.
+
+
+[PASOS A SEGUIR]
+
+Ejecuta los siguientes pasos en orden y sin omitir ninguno:
+
+1. Análisis de viabilidad: Evalúa si el valor de "Tipo proyecto" es suficientemente claro para identificar el ecosistema. Si es ambiguo o no reconocido, detente aquí y solicita al usuario la información faltante antes de continuar.
+
+2. Identificación del ecosistema: Determina, a partir del tipo de proyecto, los siguientes elementos aplicables:
+   - Lenguaje o lenguajes principales.
+   - Framework o frameworks involucrados.
+   - Herramientas de build, gestores de paquetes y sus directorios de dependencias.
+   - Herramientas de testing y sus artefactos.
+   - Archivos de configuración de entorno sensibles (como .env).
+
+3. Construcción del .gitignore: Genera el contenido del archivo `.gitignore` organizado en secciones comentadas. Los comentarios de cada sección deben escribirse en el idioma indicado en "# Lenguaje"; si el dato no está especificado, usar inglés por defecto. Las secciones deben seguir este orden cuando apliquen:
+   a. Sistema operativo (macOS, Windows, Linux).
+   b. Editor e IDE (VS Code, JetBrains, Vim, etc.).
+   c. Dependencias y paquetes.
+   d. Artefactos de compilación y build.
+   e. Archivos de entorno y configuración local.
+   f. Cachés y archivos temporales.
+   g. Archivos de testing y cobertura.
+   h. Otros archivos específicos del ecosistema.
+   i. Herramientas de IA: directorios de configuración y datos generados por aplicaciones de inteligencia artificial y agentes de código (por ejemplo: `.claude/`, `.codex/`, `.cursor/`, `.copilot/`, entre otros). Esta sección aplica a todos los tipos de proyecto.
+
+   Si el dato "Elementos especiales" no está vacío, agregar cada elemento indicado en la sección del .gitignore que corresponda según su naturaleza. Si algún elemento no encaja en ninguna sección existente, incluirlo al final bajo el comentario "# Elementos adicionales".
+
+4. Revisión: Verifica que no existan patrones duplicados ni contradictorios en el archivo generado.
+
+
+[FORMATO DE SALIDA]
+
+- Primera opción (preferida): Escribe el contenido del archivo `.gitignore` directamente en un archivo llamado `.gitignore`.
+- Segunda opción (solo si no tienes capacidad de generar archivos): Escribe el contenido al final de la respuesta como un bloque de texto sin formato, usando comillas simples al inicio y al final del bloque (sin ningún otro delimitador, símbolo Markdown ni etiqueta).
+
+
+[CRITERIO DE ÉXITO]
+
+La ejecución del prompt primario se considera exitosa cuando:
+* El archivo `.gitignore` generado cubre los patrones estándar del ecosistema indicado en "Tipo proyecto".
+* El contenido está organizado en secciones comentadas y sin duplicados.
+* No se incluyen patrones de ecosistemas ajenos al tipo de proyecto especificado, salvo herramientas transversales justificadas.

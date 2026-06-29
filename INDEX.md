@@ -29,5 +29,6 @@ Cada prompt incluye al inicio la línea `[ESTADO: LISTO | BORRADOR | DEPRECADO]`
 | Directorio | Descripción |
 |---|---|
 | `guides/` | Recursos de referencia para el desarrollador (no contiene prompts ni `CATALOG.md`) |
+| `sandbox/` | Directorio de trabajo local para pruebas con agentes — excluido de Git |
 | `history/` | Historial de ejecuciones y reportes — excluido de Git, gestionado por `project_manage_prompts/` |
 | `to_history/` | Buffer de staging hacia `/history` — excluido de Git |

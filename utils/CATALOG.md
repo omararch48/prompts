@@ -7,7 +7,8 @@ Prompts de utilidad para operaciones internas del proyecto. Generan salidas rele
 
 | Nombre base | Estado | Descripción | Formatos disponibles |
 |---|---|---|---|
-| transformar_txt_to_xml | LISTO | Transforma un prompt entre formatos estructurados. Actualmente soporta el tipo `txt_to_xml`. Genera un archivo de evaluación de la transformación. | txt |
+| transformar_txt_to_xml | LISTO | Transforma un prompt de texto plano a formato XML estructurado. Genera un archivo de evaluación de la transformación. | txt |
+| transformar_txt_to_json | BORRADOR | Transforma un prompt de texto plano a formato JSON estructurado. Usa meta-claves con prefijo `_` para representar metainformación sin atributos. Genera un archivo de evaluación de la transformación. | txt |
 
 ## Notas de uso
 - Proporcionar en los datos de entrada: el prompt secundario, el tipo de transformación (`txt_to_xml`) y las reglas de mapeo opcionales.

@@ -7,7 +7,7 @@ Prompts para tareas relacionadas con el sistema de control de versiones Git: con
 
 | Nombre base | Estado | Descripción | Formatos disponibles |
 |---|---|---|---|
-| gitignore | BORRADOR | Prompt para generar un archivo `.gitignore` personalizado | txt, md, json, xml |
+| gitignore | BORRADOR | Genera un archivo `.gitignore` adaptado al tipo de proyecto indicado (python, typescript/vue, docker, php/laravel, latex, etc.) | txt, md, json, xml |
 | gitconfig | BORRADOR | Prompt para asistir en la configuración de `.gitconfig` | md |
 
 ## Notas de uso

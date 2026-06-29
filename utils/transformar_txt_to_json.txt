@@ -1,4 +1,4 @@
-[ESTADO: LISTO]
+[ESTADO: BORRADOR]
 
 
 [ROLES]
@@ -13,7 +13,7 @@ Soy un desarrollador backend con experiencia práctica en Python, Linux, SQL, Gi
 [CONTEXTO]
 
 # Propósito
-Este prompt (denominado "prompt primario") contiene embebido un texto escrito por una persona al que llamaremos "prompt secundario". Tu tarea consiste en transformar el prompt secundario de formato de texto plano a formato XML estructurado, produciendo como resultado un prompt equivalente denominado "prompt resultante", y evaluar si la transformación mejora la aptitud del prompt para usarse en un LLM, agente, etc.
+Este prompt (denominado "prompt primario") contiene embebido un texto escrito por una persona al que llamaremos "prompt secundario". Tu tarea consiste en transformar el prompt secundario de formato de texto plano a formato JSON estructurado, produciendo como resultado un prompt equivalente denominado "prompt resultante", y evaluar si la transformación mejora la aptitud del prompt para usarse en un LLM, agente, etc.
 El prompt primario también tiene embebido el dato de entrada "reglas de mapeo", el cual aportará información en [PASOS A SEGUIR] para personalizar la transformación.
 
 
@@ -45,24 +45,40 @@ Ejecuta los siguientes pasos en orden y sin omitir ninguno:
 
 3. Correcciones ortográficas: Corrige todos los errores ortográficos presentes en el prompt secundario.
 
-4. Transformación a XML: Identifica las secciones del prompt secundario y construye el prompt resultante en formato XML siguiendo estos subpasos:
+4. Transformación a JSON: Identifica las secciones del prompt secundario y construye el prompt resultante en formato JSON siguiendo estos subpasos:
 
    4.1. Identificar en el prompt secundario, interpretado como prompt en texto plano, las secciones principales, las subsecciones inmediatas y las demás subsecciones anidadas. Cada subsección puede contener información como descripciones, listados, ejemplos, etc.
 
-   4.2. La estructura del prompt resultante (prompt XML) deberá representar, mediante etiquetas en orden lógico, cada sección y cada subsección anidada, respetando el orden indicado en el prompt secundario.
+   4.2. La estructura del prompt resultante (prompt JSON) deberá representar, mediante claves en snake_case y en orden lógico, cada sección y cada subsección anidada, respetando el orden indicado en el prompt secundario. El JSON resultante debe ser un objeto raíz que contenga todas las secciones del prompt.
 
-   4.3. Los contenidos que no sean subsecciones deben ser el contenido de la etiqueta XML, a menos que las circunstancias ameriten que, por cuestión de sintaxis XML, dichos contenidos deban incluirse dentro de etiquetas XML adicionales —como por ejemplo listas o textos de gran importancia—.
+   4.3. El valor asignado a cada clave debe determinarse según el tipo de contenido:
+   - Si el contenido es únicamente texto → asignar un string directamente.
+   - Si el contenido contiene subsecciones → asignar un objeto JSON anidado.
+   - Si el contenido es una lista de elementos del mismo tipo → asignar un array JSON.
 
-   4.4. El contenido debe ser completamente equivalente al original. Por ejemplo: si en el prompt secundario existe la sección "[REGLAS DE NEGOCIO]", al transformarse en etiqueta XML debe quedar como:
-   <reglas_de_negocio section="REGLAS DE NEGOCIO"></reglas_de_negocio>
-   El atributo section="..." permite identificar el título original de la sección y facilita la reversión de XML a texto plano.
+   4.4. El contenido debe ser completamente equivalente al original. Dado que JSON no admite atributos, cuando sea necesario preservar el título original de una sección (por ejemplo, para facilitar la reversión a texto plano), incluirlo como meta-clave "_section" dentro del objeto. Cuando el valor es texto y se requiere incluir metainformación, representarlo mediante un objeto con las claves "_section" y "_value".
 
-   4.5. Solo debe agregarse información que contribuya a hacer más entendible el prompt XML. Por ejemplo: una lista de tres elementos con numeración simple (1.1, 1.1.1, 1.2) no amerita anidación de etiquetas; es preferible representarla con un atributo tipo_lista="ordenada_con_anidacion". Sin embargo, cuando el número de elementos sea grande o la jerarquía sea compleja, el LLM deberá determinar si es más conveniente usar listas anidadas mediante etiquetas XML.
+   Por ejemplo: si en el prompt secundario existe la sección "[REGLAS DE NEGOCIO]" con contenido de texto, al transformarse en JSON debe quedar como:
+   {
+     "reglas_de_negocio": {
+       "_section": "REGLAS DE NEGOCIO",
+       "_value": "contenido de la sección"
+     }
+   }
+   Omitir "_section" únicamente cuando la clave snake_case refleje sin ambigüedad el título original y la reversibilidad no sea un requisito.
 
-   4.6. Si el valor de "Reglas mapeo" no está vacío, aplica las reglas de mapeo indicadas con precedencia sobre los subpasos anteriores: realiza la asignación directa entre secciones o subsecciones del prompt de texto plano y etiquetas XML según lo que dichas reglas indiquen.
+   4.5. Solo debe agregarse metainformación que aporte valor estructural no representable con una asignación directa. Cuando un elemento tenga datos adicionales relevantes presentes en el prompt original (como número de paso, título, prioridad u otros), representarlos como claves con prefijo "_" dentro del objeto correspondiente. Por ejemplo, un paso numerado con título:
+   {
+     "_numero": 4,
+     "_titulo": "Transformación a JSON",
+     "_value": "..."
+   }
+   No agregar meta-claves si la información ya está implícita en la clave o en la posición del elemento dentro de un array.
+
+   4.6. Si el valor de "Reglas mapeo" no está vacío, aplica las reglas de mapeo indicadas con precedencia sobre los subpasos anteriores: realiza la asignación directa entre secciones o subsecciones del prompt de texto plano y claves JSON según lo que dichas reglas indiquen.
 
    Por ejemplo, si las reglas de mapeo son:
-   "Mapea al mismo nivel de [ROLES] la información de # Mi rol con la etiqueta rol_para_subagente y agrega el atributo skills con los valores student y developer"
+   "Mapea al mismo nivel de 'roles' la información de '# Mi rol' con la clave 'rol_para_subagente' y agrega las skills 'student' y 'developer' como array"
 
    y el prompt de texto plano contiene:
 
@@ -75,8 +91,13 @@ Ejecuta los siguientes pasos en orden y sin omitir ninguno:
 
    el resultado esperado es:
 
-   <roles section="ROLES">Aquí se especifican los roles</roles>
-   <rol_para_subagente skills="student developer">Soy un estudiante</rol_para_subagente>
+   {
+     "roles": "Aquí se especifican los roles",
+     "rol_para_subagente": {
+       "_value": "Soy un estudiante",
+       "skills": ["student", "developer"]
+     }
+   }
 
 5. Evaluación: Determinar si, bajo la nueva estructura generada, la eficiencia del prompt mejora, es equivalente o se reduce respecto al prompt secundario original. Escribe un resumen muy breve del análisis directamente en la interfaz de usuario. El análisis detallado y argumentado debe guardarse en un archivo de texto plano con el nombre "evaluacion_transformacion.txt".
 
@@ -94,7 +115,7 @@ A) Resumen en la interfaz de usuario:
    - Lista resumida de los cambios aplicados al generar el prompt resultante.
 
 B) Prompt resultante:
-   - Primera opción (preferida): Escribe el prompt resultante en un archivo con extensión `.xml`.
+   - Primera opción (preferida): Escribe el prompt resultante en un archivo con extensión `.json`.
    - Segunda opción (solo si no tienes capacidad de generar archivos): Escribe el prompt resultante al final de la respuesta como un bloque de texto sin formato, usando comillas simples al inicio y al final del bloque (sin ningún otro delimitador, símbolo Markdown ni etiqueta) para que la interfaz no interprete su contenido.
 
 
